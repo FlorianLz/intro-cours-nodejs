@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NodeTop</title>
+  </head>
+  <body>
+    <div id="nodetop"></div>
+    <script src="/public/socket.io.js"></script>
+    <script>
+      let socket = io();
+      let intervalHandler = null;
+      socket.on("connect", () => {
+        if (intervalHandler === null) {
+          intervalHandler = setInterval(() => socket.emit("refresh"), 1000);
+        }
+      });
+      socket.on("nodetop", (data) => {
+        document.getElementById("nodetop").innerHTML = data;
+      });
+      socket.on("disconnect", () => {
+        if (intervalHandler !== null) {
+          clearInterval(intervalHandler);
+          intervalHandler = null;
+        }
+      });
+    </script>
+  </body>
+</html>
